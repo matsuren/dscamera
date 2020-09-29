@@ -160,7 +160,7 @@ class DSCamera(object):
         out[~valid_mask] = 0.0
         return out
 
-    def to_perspectice(self, img, img_size=(512, 512), f=0.25):
+    def to_perspective(self, img, img_size=(512, 512), f=0.25):
         # Generate 3D points
         h, w = img_size
         z = f * min(img_size)
