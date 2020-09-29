@@ -1,7 +1,8 @@
 import json
+
+import cv2
 import numpy as np
 import torch
-import cv2
 
 
 class DSCamera(object):
@@ -87,7 +88,7 @@ class DSCamera(object):
             unproj_pts = k.unsqueeze(-1) * torch.stack([mx, my, mz], dim=-1)
         else:
             unproj_pts = k[..., np.newaxis] * np.stack([mx, my, mz], axis=-1)
-        unproj_pts[..., 2] -= xi
+        unproj_pts[..., 2] -= self.xi
 
         # Calculate fov
         unprojected_fov_cos = unproj_pts[..., 2]  # unproj_pts @ z_axis
