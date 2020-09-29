@@ -2,7 +2,13 @@ import json
 
 import cv2
 import numpy as np
-import torch
+
+try:
+    import torch
+
+    with_torch = True
+except ImportError:
+    with_torch = False
 
 
 class DSCamera(object):
@@ -135,10 +141,10 @@ class DSCamera(object):
         v = self.fy * y / div + self.cy
 
         # Projected points on image plane
-        if xp == torch:
-            proj_pts = torch.stack([u, v], dim=-1)
-        else:
+        if xp == np:
             proj_pts = np.stack([u, v], axis=-1)
+        else:
+            proj_pts = torch.stack([u, v], dim=-1)
 
         # Check valid area
         if self.alpha <= 0.5:
