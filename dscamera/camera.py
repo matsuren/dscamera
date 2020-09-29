@@ -90,10 +90,10 @@ class DSCamera(object):
         k = k1 / k2
 
         # Unprojected unit vectors
-        if xp == torch:
-            unproj_pts = k.unsqueeze(-1) * torch.stack([mx, my, mz], dim=-1)
-        else:
+        if xp == np:
             unproj_pts = k[..., np.newaxis] * np.stack([mx, my, mz], axis=-1)
+        else:
+            unproj_pts = k.unsqueeze(-1) * torch.stack([mx, my, mz], dim=-1)
         unproj_pts[..., 2] -= self.xi
 
         # Calculate fov
