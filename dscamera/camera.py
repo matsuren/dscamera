@@ -1,6 +1,7 @@
 import json
 import numpy as np
 import torch
+import cv2
 
 
 class DSCamera(object):
@@ -148,3 +149,43 @@ class DSCamera(object):
         valid_mask *= fov_mask
 
         return proj_pts, valid_mask
+
+    def _warp_img(self, img, img_pts, valid_mask):
+        # Remap
+        img_pts = img_pts.astype(np.float32)
+        out = cv2.remap(
+            img, img_pts[..., 0], img_pts[..., 1], cv2.INTER_LINEAR
+        )
+        out[~valid_mask] = 0.0
+        return out
+
+    def to_perspectice(self, img, img_size=(512, 512), f=0.25):
+        # Generate 3D points
+        h, w = img_size
+        z = f * min(img_size)
+        x = np.arange(w) - w / 2
+        y = np.arange(h) - h / 2
+        x_grid, y_grid = np.meshgrid(x, y, indexing="xy")
+        point3D = np.stack([x_grid, y_grid, np.full_like(x_grid, z)], axis=-1)
+
+        # Project on image plane
+        img_pts, valid_mask = self.world2cam(point3D)
+        out = self._warp_img(img, img_pts, valid_mask)
+        return out
+
+    def to_equirect(self, img, img_size=(256, 512)):
+        # Generate 3D points
+        h, w = img_size
+        phi = -np.pi + (np.arange(w) + 0.5) * 2 * np.pi / w
+        theta = -np.pi / 2 + (np.arange(h) + 0.5) * np.pi / h
+        phi_xy, theta_xy = np.meshgrid(phi, theta, indexing="xy")
+
+        x = np.sin(phi_xy) * np.cos(theta_xy)
+        y = np.sin(theta_xy)
+        z = np.cos(phi_xy) * np.cos(theta_xy)
+        point3D = np.stack([x, y, z], axis=-1)
+
+        # Project on image plane
+        img_pts, valid_mask = self.world2cam(point3D)
+        out = self._warp_img(img, img_pts, valid_mask)
+        return out
