@@ -43,6 +43,38 @@ class DSCamera(object):
         self.fov = fov
         fov_rad = self.fov / 180 * np.pi
         self.fov_cos = np.cos(fov_rad / 2)
+        self.intrinsic_keys = ["fx", "fy", "cx", "cy", "xi", "alpha"]
+
+    @property
+    def img_size(self):
+        return self.h, self.w
+
+    @img_size.setter
+    def img_size(self, img_size):
+        self.h, self.w = map(int, img_size)
+
+    @property
+    def intrinsic(self):
+
+        intrinsic = {key: self.__dict__[key] for key in self.intrinsic_keys}
+        return intrinsic
+
+    @intrinsic.setter
+    def intrinsic(self, intrinsic):
+        for key in self.intrinsic_keys:
+            self.__dict__[key] = intrinsic[key]
+
+    def __repr__(self):
+        return (
+            f"[{self.__class__.__name__}]\n img_size:{self.img_size},fov:{self.fov},\n"
+            f" intrinsic:{json.dumps(self.intrinsic, indent=2)}"
+        )
+
+    def __hash__(self):
+        return hash(self.__repr__())
+
+    def __eq__(self, other):
+        return self.__repr__() == other.__repr__()
 
     def cam2world(self, point2D):
         """cam2world(point2D) projects a 2D point onto the unit sphere.
