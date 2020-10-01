@@ -61,3 +61,15 @@ def test_optical_center(cam):
     pts, valid = cam.cam2world([cam.cx, cam.cy])
     assert valid
     assert np.allclose(pts, np.array([0, 0, 1]))
+
+
+def test_to_perspective(cam):
+    img_size = cam.img_size
+    img = np.random.randint(0, 255, (*img_size, 3), dtype=np.uint8)
+    cam.to_perspective(img)
+
+
+def test_to_equirect(cam):
+    img_size = cam.img_size
+    img = np.random.randint(0, 255, (*img_size, 3), dtype=np.uint8)
+    cam.to_equirect(img)

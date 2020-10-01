@@ -1,3 +1,5 @@
+import tempfile
+
 import pytest
 
 from dscamera import DSCamera
@@ -6,23 +8,39 @@ from dscamera import DSCamera
 @pytest.fixture
 def cam():
     intrinsic = {
-        "fx": 120.0,
-        "fy": 120.0,
-        "cx": 320.0,
-        "cy": 240.0,
-        "xi": -0.1,
-        "alpha": 0.55,
+        "fx": 122.5,
+        "fy": 121.7,
+        "cx": 318.8,
+        "cy": 235.7,
+        "xi": -0.02,
+        "alpha": 0.56,
     }
     img_size = (480, 640)
     return DSCamera(intrinsic=intrinsic, img_size=img_size)
 
 
+def test_load_from_json(cam):
+    msg = (
+        '{"value0": {"intrinsics": [{"camera_type": "ds", '
+        '"intrinsics": {"fx": 122.5, "fy": 121.7, "cx": 318.8, "cy": 235.7, '
+        '"xi": -0.02, "alpha": 0.56}}], "resolution": [[640, 480]]}}'
+    )
+    # Tmp json file
+    with tempfile.NamedTemporaryFile() as tf:
+        with open(tf.name, "w") as f:
+            f.write(msg)
+
+        # Load from json file
+        cam_json = DSCamera(json_filename=tf.name)
+        assert cam == cam_json
+
+
 def test_eq():
     intrinsic = {
-        "fx": 120.0,
+        "fx": 122.5,
         "fy": 120.0,
-        "cx": 320.0,
-        "cy": 240.0,
+        "cx": 320.5,
+        "cy": 240.1,
         "xi": -0.1,
         "alpha": 0.55,
     }
@@ -37,6 +55,18 @@ def test_eq():
     intrinsic["xi"] += 0.1
     cam2 = DSCamera(intrinsic=intrinsic, img_size=img_size)
     assert cam1 != cam2
+
+
+def test_hash(cam):
+    # Create the same camera
+    intrinsic = cam.intrinsic
+    img_size = cam.img_size
+    cam1 = DSCamera(intrinsic=intrinsic, img_size=img_size)
+
+    # Dict
+    table = {}
+    table[cam] = "fixture_cam"
+    assert table[cam1] == "fixture_cam"
 
 
 def test_img_size(cam):
