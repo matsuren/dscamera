@@ -1,5 +1,6 @@
 ![pytest](https://github.com/matsuren/dscamera/workflows/pytest/badge.svg?branch=master)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/matsuren/dscamera)](https://github.com/matsuren/dscamera/releases)
+[![codecov](https://codecov.io/gh/matsuren/dscamera/branch/master/graph/badge.svg)](https://codecov.io/gh/matsuren/dscamera)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 ![GitHub](https://img.shields.io/github/license/matsuren/dscamera)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)

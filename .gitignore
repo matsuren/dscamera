@@ -25,3 +25,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
