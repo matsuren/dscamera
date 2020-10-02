@@ -1,3 +1,4 @@
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dscamera)
 ![pytest](https://github.com/matsuren/dscamera/workflows/pytest/badge.svg?branch=master)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/matsuren/dscamera)](https://github.com/matsuren/dscamera/releases)
 [![codecov](https://codecov.io/gh/matsuren/dscamera/branch/master/graph/badge.svg)](https://codecov.io/gh/matsuren/dscamera)
@@ -32,3 +33,15 @@ Please use [Basalt](https://vision.in.tum.de/research/vslam/basalt) for fisheye 
 
 ## Example
 Please check `example` folder for fisheye image rectifications.
+
+Input fisheye image:
+
+<img src="./example/sample.jpg" width="300px">
+
+Output perspective image:
+
+<img src="./example/perspective.jpg" width="250px">
+
+Output equirectangular image:
+
+<img src="./example/equirect.jpg" width="500px">
