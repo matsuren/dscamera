@@ -1,3 +1,3 @@
 from .camera import DSCamera
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
