@@ -45,6 +45,9 @@ class DSCamera(object):
         self.fov_cos = np.cos(fov_rad / 2)
         self.intrinsic_keys = ["fx", "fy", "cx", "cy", "xi", "alpha"]
 
+        # Valid mask for fisheye image
+        self._valid_mask = None
+
     @property
     def img_size(self):
         return self.h, self.w
@@ -55,7 +58,6 @@ class DSCamera(object):
 
     @property
     def intrinsic(self):
-
         intrinsic = {key: self.__dict__[key] for key in self.intrinsic_keys}
         return intrinsic
 
@@ -63,6 +65,18 @@ class DSCamera(object):
     def intrinsic(self, intrinsic):
         for key in self.intrinsic_keys:
             self.__dict__[key] = intrinsic[key]
+
+    @property
+    def valid_mask(self):
+        if self._valid_mask is None:
+            # Calculate and cache valid mask
+            x = np.arange(self.w)
+            y = np.arange(self.h)
+            x_grid, y_grid = np.meshgrid(x, y, indexing="xy")
+            _, valid_mask = self.cam2world([x_grid, y_grid])
+            self._valid_mask = valid_mask
+
+        return self._valid_mask
 
     def __repr__(self):
         return (

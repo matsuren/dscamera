@@ -73,3 +73,8 @@ def test_to_equirect(cam):
     img_size = cam.img_size
     img = np.random.randint(0, 255, (*img_size, 3), dtype=np.uint8)
     cam.to_equirect(img)
+
+
+def test_valid_mask(cam):
+    mask = cam.valid_mask
+    assert mask[int(cam.cx), int(cam.cy)]
