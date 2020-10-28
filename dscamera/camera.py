@@ -1,4 +1,5 @@
 import json
+from typing import Dict, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -18,16 +19,20 @@ class DSCamera(object):
     """
 
     def __init__(
-        self, json_filename=None, img_size=None, intrinsic=None, fov=180
+        self,
+        json_filename: str = "",
+        img_size: Tuple[int, int] = (0, 0),
+        intrinsic: Optional[Dict[str, float]] = None,
+        fov: float = 180,
     ):
-        if json_filename is not None:
+        if json_filename != "":
             # Load data from json file
             with open(json_filename, "r") as f:
                 data = json.load(f)
             cam_calib_data = list(data.values())[0]
             intrinsic = cam_calib_data["intrinsics"][0]["intrinsics"]
-            img_size = cam_calib_data["resolution"][0]  # [w, h]
-            img_size = (img_size[1], img_size[0])  # from [w, h] to [h, w]
+            _img_size = cam_calib_data["resolution"][0]  # [w, h]
+            img_size = (_img_size[1], _img_size[0])  # from [w, h] to [h, w]
             camera_type = cam_calib_data["intrinsics"][0]["camera_type"]
             assert camera_type == "ds", "camera type should be ds"
         assert intrinsic is not None, "Please input json file or parameters."
@@ -49,20 +54,20 @@ class DSCamera(object):
         self._valid_mask = None
 
     @property
-    def img_size(self):
+    def img_size(self) -> Tuple[int, int]:
         return self.h, self.w
 
     @img_size.setter
-    def img_size(self, img_size):
+    def img_size(self, img_size: Tuple[int, int]):
         self.h, self.w = map(int, img_size)
 
     @property
-    def intrinsic(self):
+    def intrinsic(self) -> Dict[str, float]:
         intrinsic = {key: self.__dict__[key] for key in self.intrinsic_keys}
         return intrinsic
 
     @intrinsic.setter
-    def intrinsic(self, intrinsic):
+    def intrinsic(self, intrinsic: Dict[str, float]):
         for key in self.intrinsic_keys:
             self.__dict__[key] = intrinsic[key]
 
